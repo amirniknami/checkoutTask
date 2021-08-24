@@ -22,7 +22,7 @@ class ProductTransformByProduct implements TransformByProductContract
     /**
      * @return Collection
      */
-    public function transform(): Collection
+    public function transformByProductName(): Collection
     {
         return collect($this->products)->keyBy('name');
     }

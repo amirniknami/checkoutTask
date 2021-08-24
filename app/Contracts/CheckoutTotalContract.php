@@ -7,22 +7,24 @@ namespace App\Contracts;
 interface CheckoutTotalContract
 {
 
+
     /**
-     * @param TransformByProductContract $itemsByProductName
-     * @param TransformByProductContract $rulesByProductName
+     * @param array $productsList
+     * @param array $rules
      * @param array $orderItems
      * @return float
      */
-    public function getTotalPrice(TransformByProductContract $itemsByProductName,
-                                  TransformByProductContract $rulesByProductName,
-                                  array                      $orderItems): float;
+    public function getTotalPrice(array $productsList,
+                                  array $rules,
+                                  array $orderItems): float;
+
 
     /**
-     * @param TransformByProductContract $itemsByProductName
+     * @param array $productsList
      * @param array $orderItems
      * @return string
      */
-    public function getValidOrderItems(TransformByProductContract $itemsByProductName, array $orderItems): string;
+    public function getValidOrderItems(array $productsList, array $orderItems): string;
 }
 
 

@@ -20,7 +20,7 @@ class RuleTransformByProduct implements TransformByProductContract
     /**
      * @return Collection
      */
-    public function transform(): Collection
+    public function transformByProductName(): Collection
     {
         return collect($this->rules)->keyBy('product');
     }

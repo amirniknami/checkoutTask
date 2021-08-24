@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Contracts\CheckoutTotalContract;
 use App\Contracts\TransformByProductContract;
+use App\Transformer\ProductTransformByProduct;
+use App\Transformer\RuleTransformByProduct;
 use Illuminate\Support\Collection;
 
 /**
@@ -12,21 +14,24 @@ use Illuminate\Support\Collection;
 class CheckoutService implements CheckoutTotalContract
 {
 
+
     /**
-     * @param TransformByProductContract $itemsByProductName
-     * @param TransformByProductContract $rulesByProductName
+     * @param array $productsList
+     * @param array $rules
      * @param array $orderItems
      * @return float
      */
-    public function getTotalPrice(TransformByProductContract $itemsByProductName, TransformByProductContract $rulesByProductName, array $orderItems): float
+    public function getTotalPrice(array $productsList, array $rules, array $orderItems): float
     {
 
         $itemsByProductCount = collect($orderItems)->countBy('product');
 
-        $applicableRules = $rulesByProductName->transform()
+
+        $applicableRules = (new RuleTransformByProduct($rules))->transformByProductName()
             ->intersectByKeys($itemsByProductCount);
 
-        $productsByProductName = $itemsByProductName->transform();
+
+        $productsByProductName = (new ProductTransformByProduct($productsList))->transformByProductName();
 
         return
             (float)$itemsByProductCount->reduce(function ($carry, $count, $product) use ($applicableRules, $productsByProductName) {
@@ -36,13 +41,13 @@ class CheckoutService implements CheckoutTotalContract
 
 
     /**
-     * @param TransformByProductContract $itemsByProductName
+     * @param array $productsList
      * @param array $orderItems
      * @return string
      */
-    public function getValidOrderItems(TransformByProductContract $itemsByProductName, array $orderItems): string
+    public function getValidOrderItems(array $productsList, array $orderItems): string
     {
-        $items = $itemsByProductName->transform();
+        $items = (new ProductTransformByProduct($productsList))->transformByProductName();
         return collect($orderItems)
             ->filter(fn($item) => $items->has($item['product']))
             ->map(fn($item) => $item['product'])

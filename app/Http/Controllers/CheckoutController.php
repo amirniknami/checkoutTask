@@ -21,12 +21,12 @@ class CheckoutController extends Controller
      */
     public function __invoke(CheckoutRequest $checkoutRequest, CheckoutTotalContract $checkoutService): CheckoutResource
     {
-        $transformedProductByProductName = new ProductTransformByProduct($checkoutRequest['products']);
-        $transformedRuleByProductName = new RuleTransformByProduct($checkoutRequest['rules']);
+
+        $products = $checkoutRequest['products'];
         $orderItems = $checkoutRequest['orderItems'];
 
-        $total = $checkoutService->getTotalPrice($transformedProductByProductName, $transformedRuleByProductName, $orderItems);
-        $stringOfItems = $checkoutService->getValidOrderItems($transformedRuleByProductName, $orderItems);
+        $total = $checkoutService->getTotalPrice($products, $checkoutRequest['rules'], $orderItems);
+        $stringOfItems = $checkoutService->getValidOrderItems($products, $orderItems);
 
         return new CheckoutResource(compact('total', 'stringOfItems'));
     }

@@ -12,5 +12,5 @@ interface TransformByProductContract
     /**
      * @return Collection
      */
-    public function transform(): Collection;
+    public function transformByProductName(): Collection;
 }
