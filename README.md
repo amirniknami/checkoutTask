@@ -1,64 +1,133 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# **checkout total Calculator**
+## **introduction**
+A simple shopping cart total price calculator with support for special offers.
+- [**checkout total Calculator**](#checkout-total-calculator)
+	- [**introduction**](#introduction)
+	- [**Requirements**](#requirements)
+	- [**Installation**](#installation)
+		- [**Docker**](#docker)
+			- [**Mac & Linux**](#mac--linux)
+			- [**Windows**](#windows)
+		- [**Without Docker**](#without-docker)
+	- [**Getting started**](#getting-started)
+		- [**This is Checkout API Endpoint**](#this-is-checkout-api-endpoint)
+			- [Request](#request)
+			- [Response](#response)
+	- [**Test**](#test)
+	- [**Notes**](#notes)
+## **Requirements**
+* PHP 8+
+* composer 2+
+* Docker 
 
-## About Laravel
+## **Installation** 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### **Docker**
+#### **Mac & Linux**
+There is a bash script called init in the project root
+which helps you to initialize the project and run it in port 8000 by docker.
+<br>
+**` * You are required to have docker installed on your system and configured to work without root permission.`**
+<Br >
+To run the script run the following commands.
+```bash
+./init
+```
+#### **Windows**
+If you have git bash or any terminal which could interpret bash scripts you can run the init script.
+```bash
+./init
+```
+In case you don't have access to the bash terminal run the following commands.
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/opt \
+    -w /opt \
+    laravelsail/php80-composer:latest \
+    composer install --ignore-platform-reqs
+```
+```bash
+./vendor/bin/sail up -d
+```
+**`The above commands are going to start a test server on port 8000.`**
+### **Without Docker**
+**`You should have composer and PHP installed on your system.`**
+```bash
+composer install
+```
+```bash
+php artisan serve
+```
+## **Getting started**
+You can calculate the total price of cart items with the following API. 
+### **This is Checkout API Endpoint**
+```http
+POST http://localhost:8000/api/checkout
+```
+#### Request
+| Parameter    | Type  | Description                           |
+| :----------- | :---- | :------------------------------------ |
+| `products`   | Array | **Required**, Array of products       |
+| `orderItems` | Array | **Required**, Array of cart items     |
+| `rules`      | Array | **Required**, array of discount rules |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```json
+{
+   "products":[
+      {
+         "name":"A",
+         "price":50
+      },
+      {
+         "name":"B",
+         "price":30
+      },
+      {
+         "name":"C",
+         "price":20
+      }
+   ],
+   "orderItems":[
+      {
+         "product":"A"
+      },
+      {
+         "product":"B"
+      }
+   ],
+   "rules":[
+      {
+         "product":"A",
+         "quantities":3,
+         "special_price":130
+      }
+   ]
+}
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Response
+```json
+{
+  "data": {
+    "total": 80,
+    "items": "A,B"
+  }
+}
+```
+## **Test**
+If you started the project with the docker mode run the following command.
+```bash
+./vendor/bin/sail test --testsuit=Feature
+```
+otherwise run the foloowing command.
+```bash
+php artisan test --testsuit=Feature
+```
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## **Notes**
+* If one of the ordered items or products or rule items does
+  not have the required attributes it will be omitted from the request
+  due to the `fault tolerance policy`.
+* if one of the ordered products does not have the corresponding item in the products list it will be omitted from the list of the ordered items due to the `fault tolerance policy`.
