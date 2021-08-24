@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ $(which docker) && $(docker --version) ]]; then
+    docker run --rm \
+        -u "$(id -u):$(id -g)" \
+        -v $(pwd):/opt \
+        -w /opt \
+        laravelsail/php80-composer:latest \
+        composer install --ignore-platform-reqs;
+
+        ./vendor/bin/sail up -d;
+
+      tput setaf 1;  echo "Local server started at port 8000";
+  else
+  tput setaf 1;  echo "You need too have docker installed on your system";
+fi
